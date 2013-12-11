@@ -34,20 +34,17 @@
 	$facebook->setAccessToken($access_token);
     
 	if($user_id) {
-	  // We have a user ID, so probably a logged in user.
-      // If not, we'll get an exception, which we handle below.
-      try {
+	  try {
 
 			$user_feed = $facebook->api('100000033203253?fields=feed.limit(1000).since(1386700231).fields(created_time,id,from)','GET');
-			//var_dump($user_feed['feed']['data'][0]);
+			//$user_feed = $facebook->api('100000033203253/feed','GET');
+			//var_dump($user_feed['feed']['data']);
 			foreach($user_feed['feed']['data'] as $post)
 			{
-				//echo "post id " . $post['id'] . '<br>';
-				//echo "actor id " . $post['from']['id'];
+				$post_id = $post['id'];
 				
-				$actor_id = $post['from']['id'];
-				$full_name = $post['from']['name'];
 				//$ask_name = $facebook->api('/'.$actor_id,'GET');
+				$full_name = $post['from']['name'];
 				$arr_name = explode(' ',$full_name);
 				$friend_name = $arr_name[0];
 				
@@ -55,10 +52,6 @@
 				echo $commentToMake . '<br>';
 			}			
 		} catch(FacebookApiException $e) {
-        // If the user is logged out, you can have a 
-        // user ID even though the access token is invalid.
-        // In this case, we'll get an exception, so we'll
-        // just ask the user to login again here.
         $login_url = $facebook->getLoginUrl(); 
         echo 'Please <a href="' . $login_url . '">login.</a>';
         error_log($e->getType());
@@ -66,7 +59,6 @@
       }   
     } else {
 
-      // No user, print a link for the user to login
       $login_url = $facebook->getLoginUrl();
       echo 'Please <a href="' . $login_url . '">login.</a>';
 
