@@ -3,10 +3,14 @@
   <body>
 
   <?php
+	ini_set('max_execution_time', 600);
+	
 	// Put Values -----------------------------------
 	$app_id = '1437065273175468';
 	$app_secret = '13683cd76860e09a29b5571e769d2c73';
 	$birthDate = '2013-12-11 00:00:00';
+	$doLikes = true;
+	$doComments = true;
 	//-----------------------------------------------
 	
 	function curl($url) 
@@ -44,28 +48,35 @@
 	{
 		try 
 		{
-			
-			$user_feed = $facebook->api($user_id.'?fields=feed.limit(1000).since('.$birthDateTime.').fields(created_time,id,from,message)','GET');
-			//var_dump($user_feed['feed']['data']);
+			$user_feed = $facebook->api($user_id.'?fields=feed.limit(1000).since('.$birthDateTime.').fields(created_time,id,from,likes)','GET');
+			var_dump($user_feed['feed']['data']);
 			foreach($user_feed['feed']['data'] as $post)
 			{
-				$post_id = $post['id'];		
+				$post_id = $post['id'];                
 				
 				$full_name = $post['from']['name'];
-				$arr_name = explode(' ',$full_name);
-				$friend_name = $arr_name[0];
 				
-				$facebook->api($post_id.'/likes','POST');
-				
-				$commentToMake = "Thanks " . $friend_name . "!! :)";
-				$args = array(
-					'message'   => $commentToMake
-				);
-				
-				$ret_id = $facebook->api($post_id.'/comments','POST',$args);
-				if($ret_id != 0)
+				if($doLikes)
 				{
-					echo "Success: Made Comment " . $commentToMake . '<br>';
+					$facebook->api($post_id.'/likes','POST');
+					echo "liked for " . $full_name . '<br>';
+				}
+				
+				if($doComments)
+				{
+					$arr_name = explode(' ',$full_name);
+					$friend_name = $arr_name[0];
+				
+					$commentToMake = "Thanks " . $friend_name . "!! :)";
+					$args = array(
+							'message'   => $commentToMake
+					);
+					
+					$ret_id = $facebook->api($post_id.'/comments','POST',$args);
+					if($ret_id != 0)
+					{
+							echo "Success: Made Comment " . $commentToMake . '<br>';
+					}
 				}
 			}            
 		} 	
