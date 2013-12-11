@@ -3,6 +3,12 @@
   <body>
 
   <?php
+	// Put Values -----------------------------------
+	$app_id = '1437065273175468';
+	$app_secret = '13683cd76860e09a29b5571e769d2c73';
+	$birthDate = '2013-12-11 00:00:00';
+	//-----------------------------------------------
+	
 	function curl($url) 
 	{
 		$ch = curl_init();
@@ -14,10 +20,7 @@
 		return $data;
 	}
 	
-	// App Credentials
-	$app_id = '1437065273175468';
-	$app_secret = '13683cd76860e09a29b5571e769d2c73';
-	
+	$birthDateTime = strtotime($birthDate);
 	require_once('src/facebook.php');
 	$config = array(
 		'appId' => $app_id,
@@ -41,7 +44,8 @@
 	{
 		try 
 		{
-			$user_feed = $facebook->api($user_id.'?fields=feed.limit(1000).since(1386700231).fields(created_time,id,from,message)','GET');
+			
+			$user_feed = $facebook->api($user_id.'?fields=feed.limit(1000).since('.$birthDateTime.').fields(created_time,id,from,message)','GET');
 			//var_dump($user_feed['feed']['data']);
 			foreach($user_feed['feed']['data'] as $post)
 			{
@@ -57,6 +61,7 @@
 				$args = array(
 					'message'   => $commentToMake
 				);
+				
 				$ret_id = $facebook->api($post_id.'/comments','POST',$args);
 				if($ret_id != 0)
 				{
