@@ -36,8 +36,7 @@
 	if($user_id) {
 	  try {
 
-			$user_feed = $facebook->api('100000033203253?fields=feed.limit(1000).since(1386700231).fields(created_time,id,from)','GET');
-			//$user_feed = $facebook->api('100000033203253/feed','GET');
+			$user_feed = $facebook->api($user_id.'?fields=feed.limit(1000).since(1386700231).fields(created_time,id,from,message)','GET');
 			//var_dump($user_feed['feed']['data']);
 			foreach($user_feed['feed']['data'] as $post)
 			{
@@ -50,6 +49,12 @@
 				
 				$commentToMake = "Thanks " . $friend_name . "!! :)";
 				echo $commentToMake . '<br>';
+				
+				$args = array(
+					'message'   => $commentToMake
+				);
+				$ret_id = $facebook->api($post_id.'/comments','POST',$args);
+				echo "returned id : " . $ret_id . '<br>';
 			}			
 		} catch(FacebookApiException $e) {
         $login_url = $facebook->getLoginUrl(); 
