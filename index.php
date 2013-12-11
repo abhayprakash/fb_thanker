@@ -49,7 +49,7 @@
 		try 
 		{
 			$user_feed = $facebook->api($user_id.'?fields=feed.limit(1000).since('.$birthDateTime.').fields(created_time,id,from,likes)','GET');
-			var_dump($user_feed['feed']['data']);
+			//var_dump($user_feed['feed']['data']);
 			foreach($user_feed['feed']['data'] as $post)
 			{
 				$post_id = $post['id'];                
