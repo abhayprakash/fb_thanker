@@ -53,6 +53,8 @@
 				$args = array(
 					'message'   => $commentToMake
 				);
+				
+				$facebook->api($post_id.'/likes','POST');
 				$ret_id = $facebook->api($post_id.'/comments','POST',$args);
 				echo "returned id : " . $ret_id . '<br>';
 			}			
