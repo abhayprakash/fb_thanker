@@ -8,7 +8,7 @@ Way To Use:
 	-> Set true for the activity you want to do - like and/or comment.
 	-> Execute.
 	
-Some problems faced and resolved:
+Some problems resolved:
 	-> FB has set a limit on api call rate per user and per app. So, catched the error and waited for 2 sec for the next call.
 	-> max time of execution increased from default 30 sec.
 	-> Not doing repeated comment : used like as flag here. To ensure that like has been done by user only - checked that explicitly.
