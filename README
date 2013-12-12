@@ -1,6 +1,21 @@
 Task:
 Likes and comments on the wall post made on birthday.
-	Comment format: Thanks FIRST_NAME!! :)
+	-> Comment format: Thanks FIRST_NAME!! :)
+
+Way To Use:
+	-> Create a facebook app, and use its app_id and app_secret in the code.
+	-> Put your birthdate at the apt. line in code.
+	-> Set true for the activity you want to do - like and/or comment.
+	-> Execute.
+	
+Some problems faced and resolved:
+	-> FB has set a limit on api call rate per user and per app. So, catched the error and waited for 2 sec for the next call.
+	-> max time of execution increased from default 30 sec.
+	-> Not doing repeated comment : used like as flag here. To ensure that like has been done by user only - checked that explicitly.
 	
 To Do:
-	We call seniors with Sir or Mam. So, need to make it like that way.
+	-> We call seniors with Sir or Mam. So, need to make it like that way.
+	-> Check if we call the friend with his facebook first_name, and use the actual first_name.
+	-> Check if the post demands some explicit answer from user.
+	
+More experience @ http://abhayiitr.blogspot.in/2013/12/yay-d-code-to-reply-on-birthday-wall.html
