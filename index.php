@@ -7,7 +7,7 @@
 	
 	// Put Values -----------------------------------
 	$app_id = '1437065273175468';
-	$app_secret = '13683cd76860e09a29b5571e769d2c73';
+	$app_secret = 'PUT HERE YOUR APP SECRET';
 	$birthDate = '2013-12-11 00:00:00';
 	$doLikes = true;
 	$doComments = true;
@@ -53,13 +53,45 @@
 			foreach($user_feed['feed']['data'] as $post)
 			{
 				$post_id = $post['id'];                
-				
 				$full_name = $post['from']['name'];
+				
+				if(isset($post['likes']))
+				{
+					$continueToNext = false;
+					foreach($post['likes']['data'] as $post_like)
+					{
+						if($post_like['id'] == $user_id)
+						{
+							echo "Continuing: I have already liked it<br>";
+							$continueToNext = true;
+							break;
+						}
+					}
+					
+					if($continueToNext)
+					{
+						continue;
+					}
+				}
 				
 				if($doLikes)
 				{
-					$facebook->api($post_id.'/likes','POST');
-					echo "liked for " . $full_name . '<br>';
+					try
+					{
+						$facebook->api($post_id.'/likes','POST');
+						echo "liked for " . $full_name . '<br>';
+					}
+					catch(FacebookApiException $e)
+					{
+						$Result = $e->getResult();
+						if($Result['error']['code'] == 17 || $Result['error']['code'] == 4)
+						{
+							echo "api call rate limit reached<br>";
+							sleep(2);
+							$facebook->api($post_id.'/likes','POST');
+							echo "liked for " . $full_name . '<br>';
+						}
+					}
 				}
 				
 				if($doComments)
@@ -72,12 +104,29 @@
 							'message'   => $commentToMake
 					);
 					
-					$ret_id = $facebook->api($post_id.'/comments','POST',$args);
-					if($ret_id != 0)
+					try
 					{
+						$ret_id = $facebook->api($post_id.'/comments','POST',$args);
+						if($ret_id != 0)
+						{
 							echo "Success: Made Comment " . $commentToMake . '<br>';
+						}
 					}
-				}
+					catch(FacebookApiException $e)
+					{
+						$Result = $e->getResult();
+						if($Result['error']['code'] == 17 || $Result['error']['code'] == 4)
+						{
+							echo "api call rate limit reached<br>";
+							sleep(2);
+							$ret_id = $facebook->api($post_id.'/comments','POST',$args);
+							if($ret_id != 0)
+							{
+								echo "Success: Made Comment " . $commentToMake . '<br>';
+							}
+						}
+					}
+				}				
 			}            
 		} 	
 		catch(FacebookApiException $e) 
